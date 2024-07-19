@@ -12,7 +12,7 @@ app.use(morgan('dev'))
 app.post("/llmreq", async (req, res) => {
     res.json({
         data: req.body,
-        totalChanges: 70,
+        totalChanges: 3,
         i: 1,
         tableData: ""
     })
