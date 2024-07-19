@@ -49,10 +49,12 @@ const callLlmMNextTime = () => {
                 }
                 var cell1 = newRow.insertCell(0);
                 var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var response = JSON.parse(xhr.responseText);
 
-                // Set the text content of the cells with dummy data
-                cell1.textContent = "Dummy Data 2";
-                cell2.textContent = "Dummy Data 3";
+                cell1.textContent = i;
+                cell2.textContent = response.tableData.col1;
+                cell3.textContent = response.tableData.col2;
             } else {
                 console.error('Error: ' + xhr.statusText);
             }
@@ -67,4 +69,40 @@ const callLlmMNextTime = () => {
         });
         xhr.send(payload);
     }
+}
+
+function downloadTableAsPDF1() {
+    // Get the table element
+    var table = document.getElementById("table");
+
+    // Initialize jsPDF
+    var { jsPDF } = window.jspdf;
+    var doc = new jsPDF();
+
+    // Get the table rows
+    var rows = table.rows;
+
+    // Loop through the table rows
+    for (var i = 0; i < rows.length; i++) {
+        // Get the cells of the current row
+        var cells = rows[i].cells;
+
+        // Loop through the cells of the current row
+        for (var j = 0; j < cells.length; j++) {
+            // Add cell text to the PDF
+            doc.text(cells[j].innerText, 10 + (j * 40), 10 + (i * 10));
+        }
+    }
+
+    // Save the generated PDF
+    doc.save('table.pdf');
+}
+
+
+function downloadTableAsPDF() {
+    // Get the table element
+    var table = document.getElementById("table");
+    
+    // Use html2pdf.js to convert the table to a PDF
+    html2pdf().from(table).save('table.pdf');
 }

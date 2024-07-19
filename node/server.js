@@ -3,18 +3,23 @@ const app = express()
 const cors = require('cors')
 const bodyParser = require("body-parser");
 const morgan = require('morgan');
+const crypto = require('crypto')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'))
 
+
 app.post("/llmreq", async (req, res) => {
     res.json({
         data: req.body,
-        totalChanges: 3,
+        totalChanges: 10,
         i: 1,
-        tableData: ""
+        tableData: {
+            col1: crypto.randomUUID(),
+            col2: crypto.randomUUID(),
+        }
     })
 })
 
