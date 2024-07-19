@@ -3,9 +3,8 @@ const downloadButton = document.getElementById("download")
 nextButton.style.display = "none"
 downloadButton.style.display = "none"
 let i = 0;
-let rawCount = 0;
+let rawCount;
 var table = document.getElementById("table");
-
 
 const callLlmMFirstTime = () => {
     var xhr = new XMLHttpRequest();
@@ -20,7 +19,6 @@ const callLlmMFirstTime = () => {
             var response = JSON.parse(xhr.responseText);
             console.log(response);
             rawCount = response.totalChanges;
-            i++;
         } else {
             console.error('Error: ' + xhr.statusText);
         }
@@ -36,22 +34,25 @@ const callLlmMFirstTime = () => {
 }
 
 const callLlmMNextTime = () => {
-    if (i <= rawCount) {
+    var newRow = table.insertRow();
+    if (i < rawCount) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:5000/llmreq', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
 
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
-                i++;
-                var newRow = table.insertRow();
-                // Create new cells in the row
+                i = i + 1;
+                if (i === rawCount) {
+                    nextButton.style.display = "none";
+                    downloadButton.style.display = "block";
+                }
                 var cell1 = newRow.insertCell(0);
                 var cell2 = newRow.insertCell(1);
 
                 // Set the text content of the cells with dummy data
-                cell1.textContent = "Dummy Data 1";
-                cell2.textContent = "Dummy Data 2";
+                cell1.textContent = "Dummy Data 2";
+                cell2.textContent = "Dummy Data 3";
             } else {
                 console.error('Error: ' + xhr.statusText);
             }
@@ -65,8 +66,5 @@ const callLlmMNextTime = () => {
             i
         });
         xhr.send(payload);
-    }else{
-        nextButton.style.display = "none";
-        downloadButton.style.display = "block";
     }
 }
